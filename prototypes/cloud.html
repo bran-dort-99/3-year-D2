@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Cloud Memories</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Handlee&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Handlee', cursive, sans-serif;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+
+        #loader .loader-text {
+            font-family: 'Handlee', cursive;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+
+        #loader .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        #loader .loader-fill {
+            height: 100%;
+            width: 0%;
+            background: rgba(255, 255, 255, 0.7);
+            transition: width 0.2s ease;
+        }
+
+        /* Background Image with 50% Transparency */
+        #bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("../vertical-shot-body-water-with-pink-sky-sunset-perfect-wallpaper_181624-5246.avif");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        /* Grainy Overlay */
+        .texture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+        }
+
+        #dimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 500;
+        }
+
+        body.focus-active #dimmer {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .polaroid {
+            position: absolute;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 10px 10px 35px 10px;
+            box-sizing: border-box;
+            transform-origin: center center;
+            will-change: transform;
+            cursor: grab;
+            transition: box-shadow 0.3s ease;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            border-radius: 2px;
+        }
+
+        .polaroid:active {
+            cursor: grabbing;
+        }
+
+        .layer-back {
+            filter: blur(2px) grayscale(0.2);
+            opacity: 0.7;
+            z-index: 10;
+        }
+
+        .layer-mid {
+            z-index: 50;
+        }
+
+        .layer-front {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .tape {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 40px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transform: translateX(-50%) rotate(-2deg);
+            z-index: 2;
+        }
+
+        .polaroid-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .polaroid.flipped .polaroid-inner {
+            transform: rotateX(180deg);
+        }
+
+        .polaroid-front,
+        .polaroid-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 2px;
+            background: white;
+        }
+
+        .polaroid-img {
+            width: 100%;
+            height: 85%;
+            object-fit: cover;
+            background-color: #eee;
+            margin-bottom: 5px;
+            pointer-events: none;
+        }
+
+        .caption {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: #555;
+            height: 15%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .polaroid-back {
+            background-color: #fffde7;
+            color: #333;
+            transform: rotateX(180deg);
+            padding: 15px;
+            box-sizing: border-box;
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* KEY FIX: When focused, override size/blur/opacity for consistent display */
+        .polaroid.focused {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 260px !important;
+            height: 320px !important;
+            transform: translate(-50%, -50%) rotate(0deg) !important;
+            z-index: 1000 !important;
+            cursor: default;
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            filter: none !important;
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-text">Cargando recuerdos...</div>
+        <div class="loader-bar">
+            <div class="loader-fill" id="loader-fill"></div>
+        </div>
+        <div class="loader-text" id="loader-status" style="margin-top:15px;opacity:0;">Preparando galería...</div>
+    </div>
+
+    <div id="bg-image"></div>
+    <div class="texture-overlay"></div>
+    <div id="dimmer"></div>
+    <div id="polaroids-container"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="../Bakar_-_Hell_N_Back.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Resume audio
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const t = parseFloat(params.get('t'));
+            const audio = document.getElementById('bgMusic');
+            if (!isNaN(t)) {
+                audio.currentTime = t;
+                audio.play().catch(() => { });
+            }
+        })();
+
+        const memories = [
+            { id: 1, img: '../3-feb19-photos/1cueva.JPG', caption: '#1', note: 'Encontramos el spot perfecto... lástima que tus ojos me distrajeron de la vista.', layer: 'mid' },
+            { id: 2, img: '../3-feb19-photos/2.JPG', caption: '#2', note: 'La paz que solo encuentro a tu lado.', layer: 'front' },
+            { id: 3, img: '../3-feb19-photos/3.JPG', caption: '#3', note: '365 días (2 años) y todavía no me aburro de tu cara.', layer: 'back' },
+            { id: 4, img: '../3-feb19-photos/4-gomi.JPG', caption: '#4', note: 'Celebrando a la cumpleañera más guapa del condado. El pastel es secundario, tú eres el verdadero regalo.', layer: 'mid' },
+            { id: 5, img: '../3-feb19-photos/5-dinamos.JPG', caption: '#5', note: 'El aire falta aquí arriba, pero tú me robas el aliento.', layer: 'back' },
+            { id: 6, img: '../3-feb19-photos/6-italiano.JPG', caption: '#6', note: 'La pasta estaba al dente, pero tú estás al punto de perfección.', layer: 'front' },
+            { id: 7, img: '../3-feb19-photos/7-fancy.JPG', caption: '#7', note: 'Había mil luces esa noche, pero ninguna brillaba tanto como nosotros dos juntos.', layer: 'mid' },
+            { id: 8, img: '../3-feb19-photos/8.JPG', caption: '#8', note: 'POV: Sales con la mujer más bonita del planeta.', layer: 'front' },
+            { id: 9, img: '../3-feb19-photos/9-aburrida.JPG', caption: '#9', note: 'Incluso esperando mesa te ves DIVINA. ¿Cómo le haces para que hasta el aburrimiento te quede bien?', layer: 'back' },
+            { id: 10, img: '../3-feb19-photos/10-selfie.JPG', caption: '#10', note: 'Si somos raros, que sea juntos.', layer: 'mid' },
+            { id: 11, img: '../3-feb19-photos/11-contacto-fisico.jpeg', caption: '#11', note: 'El contacto físico no es negociable. Consideralo mi suscripción premium a la felicidad.', layer: 'front' },
+            { id: 12, img: '../3-feb19-photos/12-texas.JPG', caption: '#12', note: 'The steak was great, but you were definitely the best thing on the menu that night.', layer: 'back' },
+            { id: 13, img: '../3-feb19-photos/13.JPG', caption: '#13', note: 'Tu sonrisa ilumina hasta mi noche más oscura.', layer: 'mid' },
+            { id: 14, img: '../3-feb19-photos/14-sept.JPG', caption: '#14', note: 'Gracias por seguirme el ritmo a cualquier plan.', layer: 'front' },
+            { id: 15, img: '../3-feb19-photos/15-luna.JPG', caption: '#15', note: 'Le pedí la luna y ella decidió venir conmigo.', layer: 'back' },
+            { id: 16, img: '../3-feb19-photos/16-camarones.JPG', caption: '#16', note: 'Amor es dejarte el último camarón.', layer: 'mid' },
+            { id: 17, img: '../3-feb19-photos/17-boda.JPG', caption: '#17', note: 'Te veías tan hermosa esa noche que casi interrumpo la boda para pedirte que la nuestra fuera la siguiente.', layer: 'front' },
+            { id: 18, img: '../3-feb19-photos/18-boda.JPG', caption: '#18', note: 'El mejor equipo de todas las fiestas.', layer: 'back' },
+            { id: 19, img: '../3-feb19-photos/19.JPG', caption: '#19', note: "My spidey-sense is tingling... and it's definitely because of how good you look in that suit.", layer: 'mid' },
+            { id: 20, img: '../3-feb19-photos/20-spidercouple.JPG', caption: '#20', note: 'No necesito superpoderes si te tengo a ti.', layer: 'front' },
+            { id: 21, img: '../3-feb19-photos/21-cowboys.JPG', caption: '#21', note: 'El cowboy más suertudo del viejo oeste.', layer: 'back' },
+            { id: 22, img: '../3-feb19-photos/22-dune.JPG', caption: '#22', note: "I'd cross the desert of Arrakis just to find water for you. My desert power is just loving you.", layer: 'mid' },
+            { id: 23, img: '../3-feb19-photos/23-weirdest.JPG', caption: '#23', note: 'Un nivel de locura que solo yo entiendo.', layer: 'front' },
+            { id: 24, img: '../3-feb19-photos/24-tenis.JPG', caption: '#24', note: '¿Spider-man jugando tenis? Solo contigo.', layer: 'back' },
+            { id: 25, img: '../3-feb19-photos/25-cenacumple.JPG', caption: '#25', note: 'El mejor regalo fue tenerte conmigo.', layer: 'mid' },
+            { id: 26, img: '../3-feb19-photos/26.jpeg', caption: '#26', note: 'Contigo las escalas no pesan.', layer: 'front' },
+            { id: 27, img: '../3-feb19-photos/27.jpg', caption: '#27', note: 'Próxima parada: Más recuerdos juntos.', layer: 'back' },
+            { id: 28, img: '../3-feb19-photos/28.JPG', caption: '#28', note: 'Vine por el oceanario, pero el pececito más lindo del agua eres tú.', layer: 'mid' },
+            { id: 29, img: '../3-feb19-photos/29.JPG', caption: '#29', note: 'Ni todo el oro de Cartagena vale lo que tú.', layer: 'front' },
+            { id: 30, img: '../3-feb19-photos/30.JPG', caption: '#30', note: 'La belleza más grande que pisó ese lugar.', layer: 'back' },
+            { id: 31, img: '../3-feb19-photos/31.JPG', caption: '#31', note: 'Reflejos de un viaje inolvidable.', layer: 'mid' },
+            { id: 32, img: '../3-feb19-photos/32.JPG', caption: '#32', note: '11 AM y todavía no desayunabamos.', layer: 'front' },
+            { id: 33, img: '../3-feb19-photos/33.JPG', caption: '#33', note: 'Qué chimba es estar contigo, parcera.', layer: 'back' },
+            { id: 34, img: '../3-feb19-photos/34.JPG', caption: '#34', note: '¿Quién es esa señora?', layer: 'mid' },
+            { id: 35, img: '../3-feb19-photos/35.JPG', caption: '#35', note: 'Cansados pero felices, como siempre.', layer: 'front' },
+            { id: 36, img: '../3-feb19-photos/36.JPG', caption: '#36', note: 'El skyline de Cartagena no te llega ni a los talones.', layer: 'back' },
+            { id: 37, img: '../3-feb19-photos/37.JPG', caption: '#37', note: '¿Había una vista atrás? No me di cuenta.', layer: 'mid' },
+            { id: 38, img: '../3-feb19-photos/38-2026.JPG', caption: '#38', note: 'Un San Valentín que se queda en el alma.', layer: 'front' },
+            { id: 39, img: '../3-feb19-photos/39.jpeg', caption: '#39', note: 'Corriste 21km sin entrenar solo por amor. Eso es un 10/10 en lealtad y un 0/10 en instinto de supervivencia. Te amo, loca.', layer: 'back' },
+            { id: 40, img: '../3-feb19-photos/40.jpeg', caption: '#40', note: "No sé quién ganó el set, pero en el ranking de 'pareja con más flow' somos el #1.", layer: 'mid' },
+            { id: 41, img: '../3-feb19-photos/41.jpeg', caption: '#41', note: 'Entre uvas y besos.', layer: 'front' },
+            { id: 42, img: '../3-feb19-photos/42-fotos-postre.jpeg', caption: '#42', note: '¿Mi pasión? Tomarle fotos a mi postre. ¿Mi obsesión? La persona que se lo está comiendo.', layer: 'back' },
+            { id: 43, img: '../3-feb19-photos/43.jpeg', caption: '#43', note: 'Se busca náufrago para quedarse atrapado en esta isla (requisito: que se parezca a ti).', layer: 'mid' },
+            { id: 44, img: '../3-feb19-photos/44.jpeg', caption: '#44', note: 'Un shot por Medellín, dos por nosotros y tres porque... bueno, tenemos sombrero.', layer: 'front' },
+            { id: 45, img: '../3-feb19-photos/45.jpeg', caption: '#45', note: 'Quisiera que el tiempo se detenga cuando te miro.', layer: 'back' }
+        ];
+
+        // ---- IMAGE PRELOADER ----
+        function preloadImages(imageArray, onProgress) {
+            return new Promise(resolve => {
+                let loaded = 0;
+                const total = imageArray.length;
+                imageArray.forEach(src => {
+                    const img = new Image();
+                    img.onload = img.onerror = () => {
+                        loaded++;
+                        if (onProgress) onProgress(loaded, total);
+                        if (loaded === total) resolve();
+                    };
+                    img.src = src;
+                });
+            });
+        }
+
+        const loaderFill = document.getElementById('loader-fill');
+
+        preloadImages(memories.map(m => m.img), (loaded, total) => {
+            const pct = Math.round((loaded / total) * 100);
+            loaderFill.style.width = pct + '%';
+        }).then(() => {
+            // Show "Preparing" status and wait 5s for stabilization
+            const statusEl = document.getElementById('loader-status');
+            statusEl.style.opacity = '1';
+            initCloud();
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 800);
+            }, 5000);
+        });
+
+        function initCloud() {
+            const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Body } = Matter;
+
+            const engine = Engine.create();
+            const world = engine.world;
+            engine.gravity.y = -0.04;
+
+            const runner = Runner.create();
+            Runner.run(runner, engine);
+
+            const container = document.getElementById('polaroids-container');
+            const items = [];
+            let focusedItem = null;
+
+            memories.forEach((memory, index) => {
+                let scale = memory.layer === 'back' ? 0.75 : (memory.layer === 'front' ? 1.25 : 1);
+                const w = 160 * scale;
+                const h = 200 * scale;
+                const x = Math.random() * (window.innerWidth - w) + w / 2;
+                const y = Math.random() * window.innerHeight + 100;
+
+                const body = Bodies.rectangle(x, y, w, h, {
+                    angle: (Math.random() - 0.5) * 0.4,
+                    restitution: 0.8,
+                    frictionAir: memory.layer === 'back' ? 0.05 : 0.02,
+                });
+
+                Composite.add(world, body);
+
+                const el = document.createElement('div');
+                el.className = `polaroid layer-${memory.layer}`;
+                el.style.width = `${w}px`;
+                el.style.height = `${h}px`;
+
+                el.innerHTML = `
+                ${Math.random() > 0.5 ? '<div class="tape"></div>' : ''}
+                <div class="polaroid-inner">
+                    <div class="polaroid-front">
+                        <img src="${memory.img}" class="polaroid-img" loading="lazy">
+                        <div class="caption">${memory.caption}</div>
+                    </div>
+                    <div class="polaroid-back">
+                        <div class="handwritten-note">${memory.note}</div>
+                    </div>
+                </div>
+            `;
+                container.appendChild(el);
+                const itemObj = { body, element: el, w, h };
+                items.push(itemObj);
+
+                let startPos = { x: 0, y: 0 };
+                el.addEventListener('mousedown', (e) => {
+                    startPos = { x: e.clientX, y: e.clientY };
+                });
+
+                el.addEventListener('mouseup', (e) => {
+                    const dist = Math.sqrt(Math.pow(e.clientX - startPos.x, 2) + Math.pow(e.clientY - startPos.y, 2));
+                    if (dist < 5) {
+                        if (focusedItem === itemObj) exitFocusMode();
+                        else enterFocusMode(itemObj);
+                    }
+                });
+            });
+
+            const mouse = Mouse.create(document.body);
+            const mouseConstraint = MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: { stiffness: 0.2, render: { visible: false } }
+            });
+            Composite.add(world, mouseConstraint);
+
+            function enterFocusMode(item) {
+                if (focusedItem) exitFocusMode();
+                focusedItem = item;
+                document.body.classList.add('focus-active');
+                item.element.classList.add('focused');
+                Body.setStatic(item.body, true);
+                // Flip on second click
+                item._flipHandler = () => {
+                    item.element.classList.toggle('flipped');
+                };
+                setTimeout(() => {
+                    item.element.addEventListener('click', item._flipHandler);
+                }, 700); // wait for focus animation
+            }
+
+            function exitFocusMode() {
+                if (!focusedItem) return;
+                if (focusedItem._flipHandler) {
+                    focusedItem.element.removeEventListener('click', focusedItem._flipHandler);
+                    focusedItem._flipHandler = null;
+                }
+                focusedItem.element.classList.remove('focused', 'flipped');
+                document.body.classList.remove('focus-active');
+                Body.setStatic(focusedItem.body, false);
+                Body.setVelocity(focusedItem.body, { x: 0, y: -1 });
+                focusedItem = null;
+            }
+
+            document.getElementById('dimmer').onclick = exitFocusMode;
+
+            (function loop() {
+                items.forEach(item => {
+                    if (focusedItem === item) return;
+                    const { x, y } = item.body.position;
+                    const angle = item.body.angle;
+                    if (y < -300) {
+                        Body.setPosition(item.body, { x: Math.random() * window.innerWidth, y: window.innerHeight + 200 });
+                        Body.setVelocity(item.body, { x: 0, y: 0 });
+                    }
+                    item.element.style.transform = `translate3d(${x - item.w / 2}px, ${y - item.h / 2}px, 0) rotate(${angle}rad)`;
+                });
+                requestAnimationFrame(loop);
+            })();
+        }
+    </script>
+</body>
+
+</html>
