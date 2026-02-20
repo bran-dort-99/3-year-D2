@@ -406,7 +406,7 @@
         Desliza para explorar
     </div>
 
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="none">
         <source src="../Bakar_-_Hell_N_Back.mp3" type="audio/mpeg">
     </audio>
 
@@ -438,98 +438,75 @@
         }
 
         const memories = [
-            { id: 1, img: '../3-feb19-photos/1cueva.JPG', caption: 'Encontramos el spot perfecto... lástima que tus ojos me distrajeron de la vista.' },
-            { id: 2, img: '../3-feb19-photos/2.JPG', caption: 'La paz que solo encuentro a tu lado.' },
-            { id: 3, img: '../3-feb19-photos/3.JPG', caption: '1095 días juntos.' },
-            { id: 4, img: '../3-feb19-photos/4-gomi.JPG', caption: 'Celebrando a la cumpleañera más guapa del condado. El pastel es secundario, tú eres el verdadero regalo.' },
-            { id: 5, img: '../3-feb19-photos/5-dinamos.JPG', caption: 'El aire falta aquí arriba, pero tú me robas el aliento.' },
-            { id: 6, img: '../3-feb19-photos/6-italiano.JPG', caption: 'La pasta estaba al dente, pero tú estás al punto de perfección.' },
-            { id: 7, img: '../3-feb19-photos/7-fancy.JPG', caption: 'Había mil luces esa noche, pero ninguna brillaba tanto como nosotros dos juntos.' },
-            { id: 8, img: '../3-feb19-photos/8.JPG', caption: 'POV: Sales con la mujer más bonita del planeta.' },
-            { id: 9, img: '../3-feb19-photos/9-aburrida.JPG', caption: 'Incluso esperando mesa te ves DIVINA. ¿Cómo le haces para que hasta el aburrimiento te quede bien?' },
-            { id: 10, img: '../3-feb19-photos/10-selfie.JPG', caption: 'Si somos raros, que sea juntos.' },
-            { id: 11, img: '../3-feb19-photos/11-contacto-fisico.jpeg', caption: 'El contacto físico no es negociable. Consideralo mi suscripción premium a la felicidad.' },
-            { id: 12, img: '../3-feb19-photos/12-texas.JPG', caption: 'The steak was great, but you were definitely the best thing on the menu that night.' },
-            { id: 13, img: '../3-feb19-photos/13.JPG', caption: 'Tu sonrisa ilumina hasta mi noche más oscura.' },
-            { id: 14, img: '../3-feb19-photos/14-sept.JPG', caption: 'Gracias por seguirme el ritmo a cualquier plan.' },
-            { id: 15, img: '../3-feb19-photos/15-luna.JPG', caption: 'Le pedí la luna y ella decidió venir conmigo.' },
-            { id: 16, img: '../3-feb19-photos/16-camarones.JPG', caption: 'Amor es dejarte el último camarón.' },
-            { id: 17, img: '../3-feb19-photos/17-boda.JPG', caption: 'Te veías tan hermosa esa noche que casi interrumpo la boda para pedirte que la nuestra fuera la siguiente.' },
-            { id: 18, img: '../3-feb19-photos/18-boda.JPG', caption: 'El mejor equipo de todas las fiestas.' },
-            { id: 19, img: '../3-feb19-photos/19.JPG', caption: "My spidey-sense is tingling... and it's definitely because of how good you look in that suit." },
-            { id: 20, img: '../3-feb19-photos/20-spidercouple.JPG', caption: 'No necesito superpoderes si te tengo a ti.' },
-            { id: 21, img: '../3-feb19-photos/21-cowboys.JPG', caption: 'El cowboy más suertudo del viejo oeste.' },
-            { id: 22, img: '../3-feb19-photos/22-dune.JPG', caption: "I'd cross the desert of Arrakis just to find water for you. My desert power is just loving you." },
-            { id: 23, img: '../3-feb19-photos/23-weirdest.JPG', caption: 'Un nivel de locura que solo yo entiendo.' },
-            { id: 24, img: '../3-feb19-photos/24-tenis.JPG', caption: '¿Spider-man jugando tenis? Solo contigo.' },
-            { id: 25, img: '../3-feb19-photos/25-cenacumple.JPG', caption: 'El mejor regalo fue tenerte conmigo.' },
-            { id: 26, img: '../3-feb19-photos/26.jpeg', caption: 'Contigo las escalas no pesan.' },
-            { id: 27, img: '../3-feb19-photos/27.jpg', caption: 'Próxima parada: Más recuerdos juntos.' },
-            { id: 28, img: '../3-feb19-photos/28.JPG', caption: 'Vine por el oceanario, pero el pececito más lindo del agua eres tú.' },
-            { id: 29, img: '../3-feb19-photos/29.JPG', caption: 'Ni todo el oro de Cartagena vale lo que tú.' },
-            { id: 30, img: '../3-feb19-photos/30.JPG', caption: 'La belleza más grande que pisó ese lugar.' },
-            { id: 31, img: '../3-feb19-photos/31.JPG', caption: 'Reflejos de un viaje inolvidable.' },
-            { id: 32, img: '../3-feb19-photos/32.JPG', caption: '11 AM y todavía no desayunabamos.' },
-            { id: 33, img: '../3-feb19-photos/33.JPG', caption: 'Qué chimba es estar contigo, parcera.' },
-            { id: 34, img: '../3-feb19-photos/34.JPG', caption: '¿Quién es esa señora?' },
-            { id: 35, img: '../3-feb19-photos/35.JPG', caption: 'Cansados pero felices, como siempre.' },
-            { id: 36, img: '../3-feb19-photos/36.JPG', caption: 'El skyline de Cartagena no te llega ni a los talones.' },
-            { id: 37, img: '../3-feb19-photos/37.JPG', caption: '¿Había una vista atrás? No me di cuenta.' },
-            { id: 38, img: '../3-feb19-photos/38-2026.JPG', caption: 'Un San Valentín que se queda en el alma.' },
-            { id: 39, img: '../3-feb19-photos/39.jpeg', caption: 'Corriste 21km sin entrenar solo por amor. Eso es un 10/10 en lealtad y un 0/10 en instinto de supervivencia. Te amo, loca.' },
-            { id: 40, img: '../3-feb19-photos/40.jpeg', caption: "No sé quién ganó el set, pero en el ranking de 'pareja con más flow' somos el #1." },
-            { id: 41, img: '../3-feb19-photos/41.jpeg', caption: 'Entre uvas y besos.' },
-            { id: 42, img: '../3-feb19-photos/42-fotos-postre.jpeg', caption: '¿Mi pasión? Tomarle fotos a mi postre. ¿Mi obsesión? La persona que se lo está comiendo.' },
-            { id: 43, img: '../3-feb19-photos/43.jpeg', caption: 'Se busca náufrago para quedarse atrapado en esta isla (requisito: que se parezca a ti).' },
-            { id: 44, img: '../3-feb19-photos/44.jpeg', caption: 'Un shot por Medellín, dos por nosotros y tres porque... bueno, tenemos sombrero.' },
-            { id: 45, img: '../3-feb19-photos/45.jpeg', caption: 'Quisiera que el tiempo se detenga cuando te miro.' }
+            { id: 1, img: '../3-feb19-photos-optimized/1cueva.webp', caption: 'Encontramos el spot perfecto... lástima que tus ojos me distrajeron de la vista.' },
+            { id: 2, img: '../3-feb19-photos-optimized/2.webp', caption: 'La paz que solo encuentro a tu lado.' },
+            { id: 3, img: '../3-feb19-photos-optimized/3.webp', caption: '1095 días juntos.' },
+            { id: 4, img: '../3-feb19-photos-optimized/4-gomi.webp', caption: 'Celebrando a la cumpleañera más guapa del condado. El pastel es secundario, tú eres el verdadero regalo.' },
+            { id: 5, img: '../3-feb19-photos-optimized/5-dinamos.webp', caption: 'El aire falta aquí arriba, pero tú me robas el aliento.' },
+            { id: 6, img: '../3-feb19-photos-optimized/6-italiano.webp', caption: 'La pasta estaba al dente, pero tú estás al punto de perfección.' },
+            { id: 7, img: '../3-feb19-photos-optimized/7-fancy.webp', caption: 'Había mil luces esa noche, pero ninguna brillaba tanto como nosotros dos juntos.' },
+            { id: 8, img: '../3-feb19-photos-optimized/8.webp', caption: 'POV: Sales con la mujer más bonita del planeta.' },
+            { id: 9, img: '../3-feb19-photos-optimized/9-aburrida.webp', caption: 'Incluso esperando mesa te ves DIVINA. ¿Cómo le haces para que hasta el aburrimiento te quede bien?' },
+            { id: 10, img: '../3-feb19-photos-optimized/10-selfie.webp', caption: 'Si somos raros, que sea juntos.' },
+            { id: 11, img: '../3-feb19-photos-optimized/11-contacto-fisico.webp', caption: 'El contacto físico no es negociable. Consideralo mi suscripción premium a la felicidad.' },
+            { id: 12, img: '../3-feb19-photos-optimized/12-texas.webp', caption: 'The steak was great, but you were definitely the best thing on the menu that night.' },
+            { id: 13, img: '../3-feb19-photos-optimized/13.webp', caption: 'Tu sonrisa ilumina hasta mi noche más oscura.' },
+            { id: 14, img: '../3-feb19-photos-optimized/14-sept.webp', caption: 'Gracias por seguirme el ritmo a cualquier plan.' },
+            { id: 15, img: '../3-feb19-photos-optimized/15-luna.webp', caption: 'Le pedí la luna y ella decidió venir conmigo.' },
+            { id: 16, img: '../3-feb19-photos-optimized/16-camarones.webp', caption: 'Amor es dejarte el último camarón.' },
+            { id: 17, img: '../3-feb19-photos-optimized/17-boda.webp', caption: 'Te veías tan hermosa esa noche que casi interrumpo la boda para pedirte que la nuestra fuera la siguiente.' },
+            { id: 18, img: '../3-feb19-photos-optimized/18-boda.webp', caption: 'El mejor equipo de todas las fiestas.' },
+            { id: 19, img: '../3-feb19-photos-optimized/19.webp', caption: "My spidey-sense is tingling... and it's definitely because of how good you look in that suit." },
+            { id: 20, img: '../3-feb19-photos-optimized/20-spidercouple.webp', caption: 'No necesito superpoderes si te tengo a ti.' },
+            { id: 21, img: '../3-feb19-photos-optimized/21-cowboys.webp', caption: 'El cowboy más suertudo del viejo oeste.' },
+            { id: 22, img: '../3-feb19-photos-optimized/22-dune.webp', caption: "I'd cross the desert of Arrakis just to find water for you. My desert power is just loving you." },
+            { id: 23, img: '../3-feb19-photos-optimized/23-weirdest.webp', caption: 'Un nivel de locura que solo yo entiendo.' },
+            { id: 24, img: '../3-feb19-photos-optimized/24-tenis.webp', caption: '¿Spider-man jugando tenis? Solo contigo.' },
+            { id: 25, img: '../3-feb19-photos-optimized/25-cenacumple.webp', caption: 'El mejor regalo fue tenerte conmigo.' },
+            { id: 26, img: '../3-feb19-photos-optimized/26.webp', caption: 'Contigo las escalas no pesan.' },
+            { id: 27, img: '../3-feb19-photos-optimized/27.webp', caption: 'Próxima parada: Más recuerdos juntos.' },
+            { id: 28, img: '../3-feb19-photos-optimized/28.webp', caption: 'Vine por el oceanario, pero el pececito más lindo del agua eres tú.' },
+            { id: 29, img: '../3-feb19-photos-optimized/29.webp', caption: 'Ni todo el oro de Cartagena vale lo que tú.' },
+            { id: 30, img: '../3-feb19-photos-optimized/30.webp', caption: 'La belleza más grande que pisó ese lugar.' },
+            { id: 31, img: '../3-feb19-photos-optimized/31.webp', caption: 'Reflejos de un viaje inolvidable.' },
+            { id: 32, img: '../3-feb19-photos-optimized/32.webp', caption: '11 AM y todavía no desayunabamos.' },
+            { id: 33, img: '../3-feb19-photos-optimized/33.webp', caption: 'Qué chimba es estar contigo, parcera.' },
+            { id: 34, img: '../3-feb19-photos-optimized/34.webp', caption: '¿Quién es esa señora?' },
+            { id: 35, img: '../3-feb19-photos-optimized/35.webp', caption: 'Cansados pero felices, como siempre.' },
+            { id: 36, img: '../3-feb19-photos-optimized/36.webp', caption: 'El skyline de Cartagena no te llega ni a los talones.' },
+            { id: 37, img: '../3-feb19-photos-optimized/37.webp', caption: '¿Había una vista atrás? No me di cuenta.' },
+            { id: 38, img: '../3-feb19-photos-optimized/38-2026.webp', caption: 'Un San Valentín que se queda en el alma.' },
+            { id: 39, img: '../3-feb19-photos-optimized/39.webp', caption: 'Corriste 21km sin entrenar solo por amor. Eso es un 10/10 en lealtad y un 0/10 en instinto de supervivencia. Te amo, loca.' },
+            { id: 40, img: '../3-feb19-photos-optimized/40.webp', caption: "No sé quién ganó el set, pero en el ranking de 'pareja con más flow' somos el #1." },
+            { id: 41, img: '../3-feb19-photos-optimized/41.webp', caption: 'Entre uvas y besos.' },
+            { id: 42, img: '../3-feb19-photos-optimized/42-fotos-postre.webp', caption: '¿Mi pasión? Tomarle fotos a mi postre. ¿Mi obsesión? La persona que se lo está comiendo.' },
+            { id: 43, img: '../3-feb19-photos-optimized/43.webp', caption: 'Se busca náufrago para quedarse atrapado en esta isla (requisito: que se parezca a ti).' },
+            { id: 44, img: '../3-feb19-photos-optimized/44.webp', caption: 'Un shot por Medellín, dos por nosotros y tres porque... bueno, tenemos sombrero.' },
+            { id: 45, img: '../3-feb19-photos-optimized/45.webp', caption: 'Quisiera que el tiempo se detenga cuando te miro.' }
         ];
 
-        // ---- IMAGE PRELOADER ----
-        function preloadImages(imageArray, onProgress) {
-            return new Promise(resolve => {
-                let loaded = 0;
-                const total = imageArray.length;
-                imageArray.forEach(src => {
-                    const img = new Image();
-                    img.onload = img.onerror = () => {
-                        loaded++;
-                        if (onProgress) onProgress(loaded, total);
-                        if (loaded === total) resolve();
-                    };
-                    img.src = src;
-                });
-            });
-        }
+        // ---- SKIP PRELOADER - Let browser handle lazy loading ----
+        // Hide loader immediately and show splash
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+            // Show splash
+            const splash = document.getElementById('splash');
+            splash.style.visibility = 'visible';
+            splash.style.opacity = '1';
 
-        const loaderFill = document.getElementById('loader-fill');
-
-        preloadImages(memories.map(m => m.img), (loaded, total) => {
-            const pct = Math.round((loaded / total) * 100);
-            loaderFill.style.width = pct + '%';
-        }).then(() => {
-            // Hide loader, show splash
-            const loader = document.getElementById('loader');
-            loader.style.opacity = '0';
+            // After 3s, fade splash, show gallery
             setTimeout(() => {
-                loader.style.display = 'none';
-                // Show splash
-                const splash = document.getElementById('splash');
-                splash.style.visibility = 'visible';
-                splash.style.opacity = '1';
-
-                // After 3s, fade splash, show gallery
+                splash.style.opacity = '0';
                 setTimeout(() => {
-                    splash.style.opacity = '0';
-                    setTimeout(() => {
-                        splash.style.visibility = 'hidden';
-                        document.getElementById('viewport').style.opacity = '1';
-                        document.querySelector('.scroll-hint').style.opacity = '1';
-                        document.querySelector('.flip-hint').style.opacity = '1';
-                    }, 1000);
-                }, 3000);
-            }, 800);
-        });
+                    splash.style.visibility = 'hidden';
+                    document.getElementById('viewport').style.opacity = '1';
+                    document.querySelector('.scroll-hint').style.opacity = '1';
+                    document.querySelector('.flip-hint').style.opacity = '1';
+                }, 1000);
+            }, 3000);
+        }, 300);
 
         // ---- BUILD REVOLVER ----
         const revolver = document.getElementById('revolver');
