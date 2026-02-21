@@ -3,21 +3,24 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Our 2025 together - D & D 💕</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Lora:ital@0;1&display=swap"
         rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background: #000;
             color: white;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            height: 1000vh;
-            -webkit-overflow-scrolling: touch;
         }
 
         /* Loading Screen */
@@ -81,17 +84,8 @@
         }
 
         @keyframes twinkle {
-
-            0%,
-            100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.1);
-            }
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
         /* Splash Screen */
@@ -113,20 +107,18 @@
 
         .splash-title {
             font-family: 'Inter', sans-serif;
-            font-size: 4rem;
+            font-size: clamp(2rem, 8vw, 4rem);
             font-weight: 900;
             text-align: center;
             letter-spacing: -2px;
             opacity: 0;
             transform: scale(0.9);
             animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            padding: 0 20px;
         }
 
         @keyframes popUp {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            to { opacity: 1; transform: scale(1); }
         }
 
         #viewport {
@@ -135,29 +127,27 @@
             left: 0;
             width: 100%;
             height: 100%;
-            perspective: 2000px;
+            perspective: 3000px;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
-            pointer-events: none;
         }
 
         #revolver {
             position: relative;
-            width: min(380px, 88vw);
-            height: min(270px, 62vw);
+            width: 380px;
+            height: 270px;
             transform-style: preserve-3d;
-            pointer-events: auto;
         }
 
         .card {
             position: absolute;
             top: 0;
             left: 0;
-            width: min(380px, 88vw);
-            height: min(270px, 62vw);
+            width: 380px;
+            height: 270px;
             border-radius: 12px;
             backface-visibility: hidden;
             background: rgba(255, 255, 255, 0.03);
@@ -268,13 +258,8 @@
             border-radius: 1px;
         }
 
-        .close-btn::before {
-            transform: rotate(45deg);
-        }
-
-        .close-btn::after {
-            transform: rotate(-45deg);
-        }
+        .close-btn::before { transform: rotate(45deg); }
+        .close-btn::after { transform: rotate(-45deg); }
 
         .card-front img {
             width: 100%;
@@ -314,11 +299,11 @@
             transition: opacity 1.5s ease-in-out;
             background: rgba(0, 0, 0, 0.55);
             padding: 10px 28px 10px 48px;
-            /* Extra left padding for X */
             border-radius: 30px;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             cursor: default;
+            z-index: 100;
         }
 
         .hint-close {
@@ -350,13 +335,8 @@
             background: white;
         }
 
-        .hint-close::before {
-            transform: rotate(45deg);
-        }
-
-        .hint-close::after {
-            transform: rotate(-45deg);
-        }
+        .hint-close::before { transform: rotate(45deg); }
+        .hint-close::after { transform: rotate(-45deg); }
 
         .flip-hint {
             position: fixed;
@@ -372,11 +352,47 @@
             transition: opacity 1.5s ease-in-out;
             background: rgba(0, 0, 0, 0.55);
             padding: 8px 24px 8px 44px;
-            /* Extra left padding for X */
             border-radius: 30px;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             cursor: default;
+            z-index: 100;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 500px) {
+            #revolver {
+                width: 300px;
+                height: 210px;
+            }
+            .card {
+                width: 300px;
+                height: 210px;
+            }
+            .card-back p {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            .card-back {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            #revolver {
+                width: 260px;
+                height: 180px;
+            }
+            .card {
+                width: 260px;
+                height: 180px;
+            }
+            .card-back p {
+                font-size: 11px;
+            }
+            .card-back {
+                padding: 14px;
+            }
         }
     </style>
 </head>
@@ -428,7 +444,8 @@
 
         // Generate Stars
         const bg = document.getElementById('background-canvas');
-        for (let i = 0; i < 300; i++) {
+        const starCount = window.innerWidth < 500 ? 120 : 300;
+        for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             const size = (Math.random() * 2 + 1) + 'px';
@@ -442,65 +459,61 @@
         }
 
         const memories = [
-            { id: 1, img: '../3-feb19-photos-optimized/1cueva.webp?v=2', caption: 'Encontramos el spot perfecto... lástima que tus ojos me distrajeron de la vista.' },
-            { id: 2, img: '../3-feb19-photos-optimized/2.webp?v=2', caption: 'La paz que solo encuentro a tu lado.' },
-            { id: 3, img: '../3-feb19-photos-optimized/3.webp?v=2', caption: '1095 días juntos.' },
-            { id: 4, img: '../3-feb19-photos-optimized/4-gomi.webp?v=2', caption: 'Celebrando a la cumpleañera más guapa del condado. El pastel es secundario, tú eres el verdadero regalo.' },
-            { id: 5, img: '../3-feb19-photos-optimized/5-dinamos.webp?v=2', caption: 'El aire falta aquí arriba, pero tú me robas el aliento.' },
-            { id: 6, img: '../3-feb19-photos-optimized/6-italiano.webp?v=2', caption: 'La pasta estaba al dente, pero tú estás al punto de perfección.' },
-            { id: 7, img: '../3-feb19-photos-optimized/7-fancy.webp?v=2', caption: 'Había mil luces esa noche, pero ninguna brillaba tanto como nosotros dos juntos.' },
-            { id: 8, img: '../3-feb19-photos-optimized/8.webp?v=2', caption: 'POV: Sales con la mujer más bonita del planeta.' },
-            { id: 9, img: '../3-feb19-photos-optimized/9-aburrida.webp?v=2', caption: 'Incluso esperando mesa te ves DIVINA. ¿Cómo le haces para que hasta el aburrimiento te quede bien?' },
-            { id: 10, img: '../3-feb19-photos-optimized/10-selfie.webp?v=2', caption: 'Si somos raros, que sea juntos.' },
-            { id: 11, img: '../3-feb19-photos-optimized/11-contacto-fisico.webp?v=2', caption: 'El contacto físico no es negociable. Consideralo mi suscripción premium a la felicidad.' },
-            { id: 12, img: '../3-feb19-photos-optimized/12-texas.webp?v=2', caption: 'The steak was great, but you were definitely the best thing on the menu that night.' },
-            { id: 13, img: '../3-feb19-photos-optimized/13.webp?v=2', caption: 'Tu sonrisa ilumina hasta mi noche más oscura.' },
-            { id: 14, img: '../3-feb19-photos-optimized/14-sept.webp?v=2', caption: 'Gracias por seguirme el ritmo a cualquier plan.' },
-            { id: 15, img: '../3-feb19-photos-optimized/15-luna.webp?v=2', caption: 'Le pedí la luna y ella decidió venir conmigo.' },
-            { id: 16, img: '../3-feb19-photos-optimized/16-camarones.webp?v=2', caption: 'Amor es dejarte el último camarón.' },
-            { id: 17, img: '../3-feb19-photos-optimized/17-boda.webp?v=2', caption: 'Te veías tan hermosa esa noche que casi interrumpo la boda para pedirte que la nuestra fuera la siguiente.' },
-            { id: 18, img: '../3-feb19-photos-optimized/18-boda.webp?v=2', caption: 'El mejor equipo de todas las fiestas.' },
-            { id: 19, img: '../3-feb19-photos-optimized/19.webp?v=2', caption: "My spidey-sense is tingling... and it's definitely because of how good you look in that suit." },
-            { id: 20, img: '../3-feb19-photos-optimized/20-spidercouple.webp?v=2', caption: 'No necesito superpoderes si te tengo a ti.' },
-            { id: 21, img: '../3-feb19-photos-optimized/21-cowboys.webp?v=2', caption: 'El cowboy más suertudo del viejo oeste.' },
-            { id: 22, img: '../3-feb19-photos-optimized/22-dune.webp?v=2', caption: "I'd cross the desert of Arrakis just to find water for you. My desert power is just loving you." },
-            { id: 23, img: '../3-feb19-photos-optimized/23-weirdest.webp?v=2', caption: 'Un nivel de locura que solo yo entiendo.' },
-            { id: 24, img: '../3-feb19-photos-optimized/24-tenis.webp?v=2', caption: '¿Spider-man jugando tenis? Solo contigo.' },
-            { id: 25, img: '../3-feb19-photos-optimized/25-cenacumple.webp?v=2', caption: 'El mejor regalo fue tenerte conmigo.' },
-            { id: 26, img: '../3-feb19-photos-optimized/26.webp?v=2', caption: 'Contigo las escalas no pesan.' },
-            { id: 27, img: '../3-feb19-photos-optimized/27.webp?v=2', caption: 'Próxima parada: Más recuerdos juntos.' },
-            { id: 28, img: '../3-feb19-photos-optimized/28.webp?v=2', caption: 'Vine por el oceanario, pero el pececito más lindo del agua eres tú.' },
-            { id: 29, img: '../3-feb19-photos-optimized/29.webp?v=2', caption: 'Ni todo el oro de Cartagena vale lo que tú.' },
-            { id: 30, img: '../3-feb19-photos-optimized/30.webp?v=2', caption: 'La belleza más grande que pisó ese lugar.' },
-            { id: 31, img: '../3-feb19-photos-optimized/31.webp?v=2', caption: 'Reflejos de un viaje inolvidable.' },
-            { id: 32, img: '../3-feb19-photos-optimized/32.webp?v=2', caption: '11 AM y todavía no desayunabamos.' },
-            { id: 33, img: '../3-feb19-photos-optimized/33.webp?v=2', caption: 'Qué chimba es estar contigo, parcera.' },
-            { id: 34, img: '../3-feb19-photos-optimized/34.webp?v=2', caption: '¿Quién es esa señora?' },
-            { id: 35, img: '../3-feb19-photos-optimized/35.webp?v=2', caption: 'Cansados pero felices, como siempre.' },
-            { id: 36, img: '../3-feb19-photos-optimized/36.webp?v=2', caption: 'El skyline de Cartagena no te llega ni a los talones.' },
-            { id: 37, img: '../3-feb19-photos-optimized/37.webp?v=2', caption: '¿Había una vista atrás? No me di cuenta.' },
-            { id: 38, img: '../3-feb19-photos-optimized/38-2026.webp?v=2', caption: 'Un San Valentín que se queda en el alma.' },
-            { id: 39, img: '../3-feb19-photos-optimized/39.webp?v=2', caption: 'Corriste 21km sin entrenar solo por amor. Eso es un 10/10 en lealtad y un 0/10 en instinto de supervivencia. Te amo, loca.' },
-            { id: 40, img: '../3-feb19-photos-optimized/40.webp?v=2', caption: "No sé quién ganó el set, pero en el ranking de 'pareja con más flow' somos el #1." },
-            { id: 41, img: '../3-feb19-photos-optimized/41.webp?v=2', caption: 'Entre uvas y besos.' },
-            { id: 42, img: '../3-feb19-photos-optimized/42-fotos-postre.webp?v=2', caption: '¿Mi pasión? Tomarle fotos a mi postre. ¿Mi obsesión? La persona que se lo está comiendo.' },
-            { id: 43, img: '../3-feb19-photos-optimized/43.webp?v=2', caption: 'Se busca náufrago para quedarse atrapado en esta isla (requisito: que se parezca a ti).' },
-            { id: 44, img: '../3-feb19-photos-optimized/44.webp?v=2', caption: 'Un shot por Medellín, dos por nosotros y tres porque... bueno, tenemos sombrero.' },
-            { id: 45, img: '../3-feb19-photos-optimized/45.webp?v=2', caption: 'Quisiera que el tiempo se detenga cuando te miro.' }
+            { id: 1, img: '../3-feb19-photos-optimized/1cueva.webp?v=3', caption: 'Encontramos el spot perfecto... lástima que tus ojos me distrajeron de la vista.' },
+            { id: 2, img: '../3-feb19-photos-optimized/2.webp?v=3', caption: 'La paz que solo encuentro a tu lado.' },
+            { id: 3, img: '../3-feb19-photos-optimized/3.webp?v=3', caption: '1095 días juntos.' },
+            { id: 4, img: '../3-feb19-photos-optimized/4-gomi.webp?v=3', caption: 'Celebrando a la cumpleañera más guapa del condado. El pastel es secundario, tú eres el verdadero regalo.' },
+            { id: 5, img: '../3-feb19-photos-optimized/5-dinamos.webp?v=3', caption: 'El aire falta aquí arriba, pero tú me robas el aliento.' },
+            { id: 6, img: '../3-feb19-photos-optimized/6-italiano.webp?v=3', caption: 'La pasta estaba al dente, pero tú estás al punto de perfección.' },
+            { id: 7, img: '../3-feb19-photos-optimized/7-fancy.webp?v=3', caption: 'Había mil luces esa noche, pero ninguna brillaba tanto como nosotros dos juntos.' },
+            { id: 8, img: '../3-feb19-photos-optimized/8.webp?v=3', caption: 'POV: Sales con la mujer más bonita del planeta.' },
+            { id: 9, img: '../3-feb19-photos-optimized/9-aburrida.webp?v=3', caption: 'Incluso esperando mesa te ves DIVINA. ¿Cómo le haces para que hasta el aburrimiento te quede bien?' },
+            { id: 10, img: '../3-feb19-photos-optimized/10-selfie.webp?v=3', caption: 'Si somos raros, que sea juntos.' },
+            { id: 11, img: '../3-feb19-photos-optimized/11-contacto-fisico.webp?v=3', caption: 'El contacto físico no es negociable. Consideralo mi suscripción premium a la felicidad.' },
+            { id: 12, img: '../3-feb19-photos-optimized/12-texas.webp?v=3', caption: 'The steak was great, but you were definitely the best thing on the menu that night.' },
+            { id: 13, img: '../3-feb19-photos-optimized/13.webp?v=3', caption: 'Tu sonrisa ilumina hasta mi noche más oscura.' },
+            { id: 14, img: '../3-feb19-photos-optimized/14-sept.webp?v=3', caption: 'Gracias por seguirme el ritmo a cualquier plan.' },
+            { id: 15, img: '../3-feb19-photos-optimized/15-luna.webp?v=3', caption: 'Le pedí la luna y ella decidió venir conmigo.' },
+            { id: 16, img: '../3-feb19-photos-optimized/16-camarones.webp?v=3', caption: 'Amor es dejarte el último camarón.' },
+            { id: 17, img: '../3-feb19-photos-optimized/17-boda.webp?v=3', caption: 'Te veías tan hermosa esa noche que casi interrumpo la boda para pedirte que la nuestra fuera la siguiente.' },
+            { id: 18, img: '../3-feb19-photos-optimized/18-boda.webp?v=3', caption: 'El mejor equipo de todas las fiestas.' },
+            { id: 19, img: '../3-feb19-photos-optimized/19.webp?v=3', caption: "My spidey-sense is tingling... and it's definitely because of how good you look in that suit." },
+            { id: 20, img: '../3-feb19-photos-optimized/20-spidercouple.webp?v=3', caption: 'No necesito superpoderes si te tengo a ti.' },
+            { id: 21, img: '../3-feb19-photos-optimized/21-cowboys.webp?v=3', caption: 'El cowboy más suertudo del viejo oeste.' },
+            { id: 22, img: '../3-feb19-photos-optimized/22-dune.webp?v=3', caption: "I'd cross the desert of Arrakis just to find water for you. My desert power is just loving you." },
+            { id: 23, img: '../3-feb19-photos-optimized/23-weirdest.webp?v=3', caption: 'Un nivel de locura que solo yo entiendo.' },
+            { id: 24, img: '../3-feb19-photos-optimized/24-tenis.webp?v=3', caption: '¿Spider-man jugando tenis? Solo contigo.' },
+            { id: 25, img: '../3-feb19-photos-optimized/25-cenacumple.webp?v=3', caption: 'El mejor regalo fue tenerte conmigo.' },
+            { id: 26, img: '../3-feb19-photos-optimized/26.webp?v=3', caption: 'Contigo las escalas no pesan.' },
+            { id: 27, img: '../3-feb19-photos-optimized/27.webp?v=3', caption: 'Próxima parada: Más recuerdos juntos.' },
+            { id: 28, img: '../3-feb19-photos-optimized/28.webp?v=3', caption: 'Vine por el oceanario, pero el pececito más lindo del agua eres tú.' },
+            { id: 29, img: '../3-feb19-photos-optimized/29.webp?v=3', caption: 'Ni todo el oro de Cartagena vale lo que tú.' },
+            { id: 30, img: '../3-feb19-photos-optimized/30.webp?v=3', caption: 'La belleza más grande que pisó ese lugar.' },
+            { id: 31, img: '../3-feb19-photos-optimized/31.webp?v=3', caption: 'Reflejos de un viaje inolvidable.' },
+            { id: 32, img: '../3-feb19-photos-optimized/32.webp?v=3', caption: '11 AM y todavía no desayunabamos.' },
+            { id: 33, img: '../3-feb19-photos-optimized/33.webp?v=3', caption: 'Qué chimba es estar contigo, parcera.' },
+            { id: 34, img: '../3-feb19-photos-optimized/34.webp?v=3', caption: '¿Quién es esa señora?' },
+            { id: 35, img: '../3-feb19-photos-optimized/35.webp?v=3', caption: 'Cansados pero felices, como siempre.' },
+            { id: 36, img: '../3-feb19-photos-optimized/36.webp?v=3', caption: 'El skyline de Cartagena no te llega ni a los talones.' },
+            { id: 37, img: '../3-feb19-photos-optimized/37.webp?v=3', caption: '¿Había una vista atrás? No me di cuenta.' },
+            { id: 38, img: '../3-feb19-photos-optimized/38-2026.webp?v=3', caption: 'Un San Valentín que se queda en el alma.' },
+            { id: 39, img: '../3-feb19-photos-optimized/39.webp?v=3', caption: 'Corriste 21km sin entrenar solo por amor. Eso es un 10/10 en lealtad y un 0/10 en instinto de supervivencia. Te amo, loca.' },
+            { id: 40, img: '../3-feb19-photos-optimized/40.webp?v=3', caption: "No sé quién ganó el set, pero en el ranking de 'pareja con más flow' somos el #1." },
+            { id: 41, img: '../3-feb19-photos-optimized/41.webp?v=3', caption: 'Entre uvas y besos.' },
+            { id: 42, img: '../3-feb19-photos-optimized/42-fotos-postre.webp?v=3', caption: '¿Mi pasión? Tomarle fotos a mi postre. ¿Mi obsesión? La persona que se lo está comiendo.' },
+            { id: 43, img: '../3-feb19-photos-optimized/43.webp?v=3', caption: 'Se busca náufrago para quedarse atrapado en esta isla (requisito: que se parezca a ti).' },
+            { id: 44, img: '../3-feb19-photos-optimized/44.webp?v=3', caption: 'Un shot por Medellín, dos por nosotros y tres porque... bueno, tenemos sombrero.' },
+            { id: 45, img: '../3-feb19-photos-optimized/45.webp?v=3', caption: 'Quisiera que el tiempo se detenga cuando te miro.' }
         ];
 
-        // ---- SKIP PRELOADER - Let browser handle lazy loading ----
-        // Hide loader immediately and show splash
+        // ---- SKIP PRELOADER ----
         const loader = document.getElementById('loader');
         loader.style.opacity = '0';
         setTimeout(() => {
             loader.style.display = 'none';
-            // Show splash
             const splash = document.getElementById('splash');
             splash.style.visibility = 'visible';
             splash.style.opacity = '1';
-
-            // After 3s, fade splash, show gallery
             setTimeout(() => {
                 splash.style.opacity = '0';
                 setTimeout(() => {
@@ -515,8 +528,12 @@
         // ---- BUILD REVOLVER ----
         const revolver = document.getElementById('revolver');
         const itemCount = memories.length;
-        // Dynamic radius based on actual card height so it works on mobile too
-        const cardH = Math.min(270, window.innerWidth * 0.62);
+
+        // Get actual card height based on screen size (matches CSS media queries)
+        const vw = window.innerWidth;
+        const cardH = vw <= 360 ? 180 : (vw <= 500 ? 210 : 270);
+
+        // Radius: place cards around a cylinder so they don't overlap
         const radius = Math.round((itemCount * cardH) / (2 * Math.PI));
         const angleStep = 360 / itemCount;
 
@@ -524,22 +541,22 @@
             const el = document.createElement('div');
             el.className = 'card';
             const angle = i * angleStep;
-            el.style.transform = `rotateX(${angle}deg) translateZ(${radius}px)`;
-            el.innerHTML = `
-                <div class="card-flipper">
-                    <div class="card-front">
-                        <img src="${mem.img}" loading="lazy">
-                        <div class="card-label">#${mem.id}</div>
-                    </div>
-                    <div class="card-back">
-                        <img src="${mem.img}" class="card-back-img" loading="lazy">
-                        <div class="card-back-overlay"></div>
-                        <div class="close-btn"></div>
-                        <p>${mem.caption}</p>
-                    </div>
-                </div>
-            `;
-            el.addEventListener('click', (e) => {
+            el.style.transform = 'rotateX(' + angle + 'deg) translateZ(' + radius + 'px)';
+            el.innerHTML = '<div class="card-flipper">' +
+                '<div class="card-front">' +
+                '<img src="' + mem.img + '" loading="lazy">' +
+                '<div class="card-label">#' + mem.id + '</div>' +
+                '</div>' +
+                '<div class="card-back">' +
+                '<img src="' + mem.img + '" class="card-back-img" loading="lazy">' +
+                '<div class="card-back-overlay"></div>' +
+                '<div class="close-btn"></div>' +
+                '<p>' + mem.caption + '</p>' +
+                '</div>' +
+                '</div>';
+
+            // Click to flip (desktop)
+            el.addEventListener('click', function(e) {
                 if (e.target.classList.contains('close-btn')) {
                     el.classList.remove('flipped');
                     e.stopPropagation();
@@ -547,47 +564,49 @@
                     el.classList.toggle('flipped');
                 }
             });
-            // Touch flip support
-            let touchStartY = 0;
-            el.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-            el.addEventListener('touchend', (e) => {
-                const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
-                if (dy < 10) { // tap, not scroll
-                    if (e.target.classList.contains('close-btn')) {
-                        el.classList.remove('flipped');
-                    } else {
-                        el.classList.toggle('flipped');
-                    }
-                }
-            }, { passive: true });
+
             revolver.appendChild(el);
         });
 
-        // Scroll handler (works for both mouse wheel and touch native scroll)
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const rotation = scrollY * 0.12;
-            revolver.style.transform = `rotateX(${-rotation}deg)`;
+        // ---- ROTATION STATE (driven by wheel + touch, not native scroll) ----
+        var rotation = 0;
 
-            const maxScroll = document.body.scrollHeight - window.innerHeight;
-            if (scrollY > maxScroll - 50) {
-                window.scrollTo(0, 50);
-            } else if (scrollY < 5) {
-                window.scrollTo(0, maxScroll - 60);
-            }
-        });
+        // Desktop: mouse wheel
+        window.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            rotation += e.deltaY * 0.05;
+            revolver.style.transform = 'rotateX(' + (-rotation) + 'deg)';
+        }, { passive: false });
 
-        window.scrollTo(0, (document.body.scrollHeight - window.innerHeight) / 2);
+        // Mobile: touch drag
+        var touchStartY = 0;
+        var touchActive = false;
 
-        // Close hints
-        document.querySelectorAll('.hint-close').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation(); // prevent any other clicks
-                const parent = btn.parentElement;
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+            touchActive = true;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (!touchActive) return;
+            var touchY = e.touches[0].clientY;
+            var delta = touchStartY - touchY;
+            rotation += delta * 0.15;
+            revolver.style.transform = 'rotateX(' + (-rotation) + 'deg)';
+            touchStartY = touchY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', function() {
+            touchActive = false;
+        }, { passive: true });
+
+        // ---- CLOSE HINTS ----
+        document.querySelectorAll('.hint-close').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var parent = btn.parentElement;
                 parent.style.opacity = '0';
-                setTimeout(() => parent.style.display = 'none', 1500);
+                setTimeout(function() { parent.style.display = 'none'; }, 1500);
             });
         });
     </script>
