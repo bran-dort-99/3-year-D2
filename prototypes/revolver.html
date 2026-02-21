@@ -143,8 +143,8 @@
 
         #revolver {
             position: relative;
-            width: 380px;
-            height: 270px;
+            width: min(380px, 88vw);
+            height: min(270px, 62vw);
             transform-style: preserve-3d;
         }
 
@@ -152,8 +152,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 380px;
-            height: 270px;
+            width: min(380px, 88vw);
+            height: min(270px, 62vw);
             border-radius: 12px;
             backface-visibility: hidden;
             background: rgba(255, 255, 255, 0.03);
@@ -511,9 +511,9 @@
         // ---- BUILD REVOLVER ----
         const revolver = document.getElementById('revolver');
         const itemCount = memories.length;
-        // 45 cards of 270px height: circumference = 45 * 270 = 12150
-        // radius = 12150 / (2 * PI) ≈ 1934. Use ~2000 for breathing room.
-        const radius = 2000;
+        // Dynamic radius based on actual card height so it works on mobile too
+        const cardH = Math.min(270, window.innerWidth * 0.62);
+        const radius = Math.round((itemCount * cardH) / (2 * Math.PI));
         const angleStep = 360 / itemCount;
 
         memories.forEach((mem, i) => {
@@ -543,8 +543,36 @@
                     el.classList.toggle('flipped');
                 }
             });
+            // Touch flip support
+            let touchStartY = 0;
+            el.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            el.addEventListener('touchend', (e) => {
+                const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+                if (dy < 10) { // tap, not scroll
+                    if (e.target.classList.contains('close-btn')) {
+                        el.classList.remove('flipped');
+                    } else {
+                        el.classList.toggle('flipped');
+                    }
+                }
+            }, { passive: true });
             revolver.appendChild(el);
         });
+
+        // Touch scroll to spin the revolver
+        let lastTouchY = null;
+        window.addEventListener('touchstart', (e) => {
+            lastTouchY = e.touches[0].clientY;
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (lastTouchY === null) return;
+            const deltaY = lastTouchY - e.touches[0].clientY;
+            window.scrollBy(0, deltaY * 2.5);
+            lastTouchY = e.touches[0].clientY;
+            e.preventDefault();
+        }, { passive: false });
 
         window.addEventListener('scroll', () => {
             const scrollY = window.scrollY;

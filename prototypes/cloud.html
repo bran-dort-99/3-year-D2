@@ -213,8 +213,8 @@
             position: fixed !important;
             top: 50% !important;
             left: 50% !important;
-            width: 260px !important;
-            height: 320px !important;
+            width: min(260px, 80vw) !important;
+            height: min(320px, 65vh) !important;
             transform: translate(-50%, -50%) rotate(0deg) !important;
             z-index: 1000 !important;
             cursor: default;
@@ -379,6 +379,19 @@
                         else enterFocusMode(itemObj);
                     }
                 });
+
+                // Touch support
+                el.addEventListener('touchstart', (e) => {
+                    startPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }, { passive: true });
+                el.addEventListener('touchend', (e) => {
+                    const t = e.changedTouches[0];
+                    const dist = Math.sqrt(Math.pow(t.clientX - startPos.x, 2) + Math.pow(t.clientY - startPos.y, 2));
+                    if (dist < 10) {
+                        if (focusedItem === itemObj) exitFocusMode();
+                        else enterFocusMode(itemObj);
+                    }
+                }, { passive: true });
             });
 
             const mouse = Mouse.create(document.body);
@@ -417,6 +430,10 @@
             }
 
             document.getElementById('dimmer').onclick = exitFocusMode;
+            document.getElementById('dimmer').addEventListener('touchend', (e) => {
+                e.preventDefault();
+                exitFocusMode();
+            }, { passive: false });
 
             (function loop() {
                 items.forEach(item => {
